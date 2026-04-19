@@ -142,12 +142,11 @@
     .newsletter-input::placeholder { color:rgba(255,255,255,.3); }
     .newsletter-input:focus { border-color:rgba(212,175,55,.45); }
 
-    /* MOBILE OPTIMIZATIONS */
+    /* MOBILE OPTIMIZATIONS - Fixed without breaking sliders */
     @media(max-width:640px){
-      /* Container centering */
+      /* Container centering without breaking absolute positioning */
       .container, 
-      [class*="max-w-"],
-      section > div {
+      section > div[class*="max-w-"] {
         width: 100% !important;
         max-width: 100% !important;
         padding-left: 1rem !important;
@@ -163,8 +162,13 @@
       }
       
       /* Text centering */
-      h1, h2, h3, h4, h5, h6, p, .section-label {
+      h1, h2, h3, h4, h5, h6, .section-label, p:not(.ba-label):not(.mini-lbl):not(.testi-card p) {
         text-align: center !important;
+      }
+      
+      /* Keep testimonial text left-aligned for readability */
+      .testi-card p {
+        text-align: left !important;
       }
       
       /* Hero section fixes */
@@ -174,25 +178,24 @@
         text-align: center !important;
       }
       
-      .min-h-\[90vh\] > div {
-        text-align: center !important;
-      }
-      
       /* Hide floating orbs on mobile */
       .absolute.bottom-16.right-12,
       .absolute.top-36.left-8 {
         display: none;
       }
       
-      /* Reveal elements centering */
+      /* Reveal elements - fix transform for mobile */
       .reveal, .reveal-l, .reveal-r {
         margin-left: auto !important;
         margin-right: auto !important;
-        transform: translateY(28px) !important;
       }
       
       .reveal-l, .reveal-r {
         transform: translateY(28px) !important;
+      }
+      
+      .reveal-l.active, .reveal-r.active {
+        transform: translateY(0) !important;
       }
       
       /* Grid centering */
@@ -220,7 +223,7 @@
         border-bottom: none !important; 
       }
       
-      /* BA wrapper */
+      /* BA wrapper - maintain absolute positioning for slider functionality */
       .ba-wrapper { 
         height: 360px !important; 
         border-radius: 1.75rem !important; 
@@ -248,17 +251,13 @@
         border-radius: 2rem !important; 
       }
       
-      .cta-box .relative.z-10 {
-        text-align: center !important;
-      }
-      
       /* Image centering */
       .relative.flex.justify-center {
         margin-left: auto !important;
         margin-right: auto !important;
       }
       
-      /* Footer */
+      /* Footer centering */
       footer .grid {
         text-align: center !important;
       }
@@ -274,9 +273,13 @@
         margin-right: auto !important;
       }
       
+      /* Footer column titles */
+      .footer-col-title {
+        text-align: center !important;
+      }
+      
       /* Testimonial cards */
       .testi-card {
-        text-align: left !important;
         margin-left: auto !important;
         margin-right: auto !important;
       }
@@ -292,20 +295,9 @@
         align-items: center !important;
       }
       
-      /* Any inline elements that might be left-aligned */
+      /* Fix for inline-flex elements */
       .inline-flex {
         justify-content: center !important;
-      }
-      
-      /* Fix for any absolute positioned elements that might cause offset */
-      [class*="absolute"] {
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-      }
-      
-      /* Keep handle and divider positioning relative to container */
-      .ba-handle, .ba-divider, .mini-ba-handle, .mini-ba-div {
-        left: 50% !important;
       }
     }
     
@@ -358,8 +350,8 @@
     </div>
 
     <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] mb-6 md:mb-7 mx-auto max-w-4xl">
-      <span class="block">Zipe Ubora <span class="shimmer-text">Picha zako</span></span>
-      <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-gold-light to-primary-gold">Kwa Kutumia AI</span>
+      <span class="block">Zipe Ubora<span class="shimmer-text">Picha zako</span></span>
+      <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-gold-light to-primary-gold">Kwa kutumia AI</span>
     </h1>
 
     <p class="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 md:mb-10 font-light leading-relaxed px-2">
@@ -605,7 +597,16 @@
       <div class="relative rounded-[2.5rem] border border-white/12 shadow-2xl overflow-hidden max-w-xs w-full">
         <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop"
              alt="AI realism demo" class="w-full object-cover hover:scale-105 transition duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-5">
+          <div class="flex gap-0.5 mb-2">
+            <i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i>
+          </div>
+          <p class="text-white font-bold text-sm flex items-center gap-2"><i class="fa-regular fa-circle-check text-primary-gold"></i> Uhalisia wa 99% · Imehakikiwa</p>
+        </div>
+        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-primary-gold/30 rounded-full px-3 py-1.5 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-primary-gold rounded-full animate-pulse"></span>
+          <span class="text-primary-gold text-[10px] uppercase tracking-widest font-bold">AI Enhanced</span>
         </div>
       </div>
     </div>
@@ -704,19 +705,12 @@
         <a href="#" class="footer-link">Sera ya Faragha</a>
         <a href="#" class="footer-link">Masharti ya Matumizi</a>
       </div>
-
-      <div>
-        <span class="footer-col-title">Habari Mpya</span>
-        <p class="text-gray-400 text-xs md:text-sm mb-4 leading-relaxed">Pokea mwongozo wa AI na habari za kipengele kipya kwenye barua pepe yako.</p>
-        <input type="email" placeholder="barua@mfano.com" class="newsletter-input mb-2">
-        <button class="btn-gold px-5 py-2.5 text-sm w-full rounded-full font-bold">Jiandikishe →</button>
-      </div>
     </div>
 
     <div class="footer-rule"></div>
 
     <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-      <p class="text-gray-500 text-[11px] md:text-xs text-center md:text-left">&copy; 2026 Pixtrend. Zao la <a href="https://watulab.com" class="text-white/60 hover:text-primary-gold transition-colors underline underline-offset-2 decoration-primary-gold/25 font-bold">Watu Lab</a>. Haki zote zimehifadhiwa.</p>
+      <p class="text-gray-500 text-[11px] md:text-xs text-center md:text-left">&copy;2026 Pixtrend <a href="https://watulab.com" class="text-white/60 hover:text-primary-gold transition-colors underline underline-offset-2 decoration-primary-gold/25 font-bold"> Watu Lab</a>. Haki zote zimehifadhiwa.</p>
       <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-[11px] md:text-xs text-gray-500 font-medium">
         <a href="#" class="hover:text-primary-gold transition-colors">Sera ya Faragha</a>
         <a href="#" class="hover:text-primary-gold transition-colors">Masharti</a>
