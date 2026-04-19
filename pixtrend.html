@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Pixtrend · AI Visual Excellence | Watu Lab</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { black: '#050505', grey: '#141414', dark: '#0b0b0b' },
+            primary: { gold: '#D4AF37', 'gold-light': '#F5E7A4', 'gold-soft': '#E8C96A' }
+          },
+          fontFamily: {
+            sans: ['Space Grotesk', 'system-ui', 'sans-serif']
+          },
+          keyframes: {
+            fluidMove: { '0%': { transform: 'translate(0%,0%) scale(1)' }, '50%': { transform: 'translate(-7%,-5%) scale(1.18)' }, '100%': { transform: 'translate(5%,7%) scale(1.1)' } },
+            morphGradient: { '0%': { backgroundPosition:'0% 50%' }, '50%': { backgroundPosition:'100% 50%' }, '100%': { backgroundPosition:'0% 50%' } },
+            shimmer: { '0%': { backgroundPosition:'200% 0' }, '100%': { backgroundPosition:'-200% 0' } }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background:#050505; font-family:'Space Grotesk', sans-serif; color:#fff; overflow-x:hidden; -webkit-font-smoothing:antialiased; font-feature-settings: "ss02","cv05"; }
+
+    /* FLUID BG */
+    .fluid-bg { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+    .fluid-orb { position:absolute; border-radius:50%; filter:blur(90px); mix-blend-mode:screen; animation:fluidMove 24s infinite alternate ease-in-out; }
+    .fluid-orb-1 { width:72vw; height:72vw; opacity:.42; background:radial-gradient(circle, rgba(212,175,55,.2) 0%, rgba(90,50,150,.14) 65%, transparent 100%); top:-18%; left:-12%; animation-duration:30s; }
+    .fluid-orb-2 { width:82vw; height:82vw; opacity:.32; background:radial-gradient(circle at 70% 20%, rgba(255,215,100,.15), rgba(20,15,45,.5)); bottom:-22%; right:-12%; animation-duration:38s; animation-direction:alternate-reverse; }
+    .fluid-orb-3 { width:55vw; height:55vw; opacity:.22; background:radial-gradient(circle, rgba(212,175,55,.15), rgba(10,180,200,.1)); top:42%; left:28%; filter:blur(110px); animation:morphGradient 20s infinite alternate; }
+
+    /* GRID */
+    .bg-grid { background-image: linear-gradient(rgba(212,175,55,.022) 1px, transparent 1px), linear-gradient(to right, rgba(212,175,55,.022) 1px, transparent 1px); background-size:52px 52px; }
+
+    /* NAV */
+    .glass-nav { background:rgba(5,5,5,.72); backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px); border-bottom:1px solid rgba(212,175,55,.14); transition:border-color .3s; }
+    .nav-link { font-size:.875rem; color:rgba(255,255,255,.6); padding:.5rem 1rem; border-radius:9999px; transition:all .25s; font-weight: 500; }
+    .nav-link:hover { color:#fff; background:rgba(255,255,255,.06); }
+
+    /* BUTTONS */
+    .btn-gold { background:linear-gradient(135deg,#D4AF37,#F5E7A4,#D4AF37); background-size:200% auto; color:#000; font-weight:700; border-radius:9999px; transition:all .35s; box-shadow:0 8px 28px -6px rgba(212,175,55,.45); letter-spacing:.02em; }
+    .btn-gold:hover { background-position:right center; transform:translateY(-2px); box-shadow:0 16px 36px -8px rgba(212,175,55,.55); }
+    .btn-outline { border:1px solid rgba(255,255,255,.18); border-radius:9999px; font-weight:600; transition:all .3s; backdrop-filter:blur(8px); }
+    .btn-outline:hover { border-color:rgba(212,175,55,.45); background:rgba(212,175,55,.06); }
+
+    /* SECTION LABEL */
+    .section-label { display:inline-flex; align-items:center; gap:10px; font-size:.7rem; letter-spacing:.25em; text-transform:uppercase; color:#D4AF37; font-weight:600; }
+    .section-label::before,.section-label::after { content:''; display:block; width:22px; height:1px; background:linear-gradient(to right, transparent,#D4AF37); }
+    .section-label::after { background:linear-gradient(to left, transparent,#D4AF37); }
+
+    /* SHIMMER */
+    .shimmer-text { background:linear-gradient(90deg,#fff 0%,#D4AF37 35%,#F5E7A4 60%,#fff 100%); background-size:200% auto; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 6s linear infinite; }
+
+    /* REVEAL */
+    .reveal,.reveal-l,.reveal-r { opacity:0; transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .reveal { transform:translateY(28px); }
+    .reveal-l { transform:translateX(-32px); }
+    .reveal-r { transform:translateX(32px); }
+    .reveal.active,.reveal-l.active,.reveal-r.active { opacity:1; transform:none; }
+
+    /* GLASS CARD */
+    .glass-card { background:rgba(12,12,16,.65); backdrop-filter:blur(20px); border:1px solid rgba(212,175,55,.1); transition:all .5s cubic-bezier(.2,.9,.3,1); box-shadow:0 20px 50px -15px rgba(0,0,0,.7); }
+    .glass-card:hover { border-color:rgba(212,175,55,.32); background:rgba(20,20,26,.8); transform:translateY(-6px); box-shadow:0 32px 60px -15px #000, 0 0 0 1px rgba(212,175,55,.18); }
+
+    /* MAIN BA SLIDER */
+    .ba-wrapper { position:relative; width:100%; max-width:900px; height:520px; margin:0 auto; border-radius:2.5rem; overflow:hidden; border:1px solid rgba(212,175,55,.25); box-shadow:0 50px 80px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(212,175,55,.08); background:#08080a; cursor:ew-resize; }
+    .ba-base-img,.ba-clip-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 28%; pointer-events:none; user-select:none; }
+    .ba-clip-layer { position:absolute; inset:0; width:100%; height:100%; clip-path:inset(0 50% 0 0); z-index:3; }
+    .ba-divider { position:absolute; top:0; left:50%; width:3px; height:100%; background:linear-gradient(to bottom,transparent 0%,#D4AF37 8%,#D4AF37 92%,transparent 100%); transform:translateX(-50%); z-index:5; pointer-events:none; box-shadow:0 0 22px rgba(212,175,55,.55); }
+    .ba-slider-input { position:absolute; inset:0; width:100%; height:100%; opacity:0; z-index:10; cursor:ew-resize; margin:0; }
+    .ba-handle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:8; pointer-events:none; }
+    .handle-pill { width:56px; height:56px; background:linear-gradient(135deg,#D4AF37,#F5E7A4); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2.5px solid rgba(255,255,255,.95); box-shadow:0 0 0 8px rgba(212,175,55,.12), 0 8px 24px rgba(0,0,0,.45); }
+    .ba-label { position:absolute; bottom:18px; z-index:6; padding:5px 16px; border-radius:60px; font-weight:600; font-size:.75rem; letter-spacing:.1em; background:rgba(0,0,0,.55); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.1); pointer-events:none; }
+    .label-left { left:20px; color:#ccc; }
+    .label-right { right:20px; color:#D4AF37; border-color:rgba(212,175,55,.35); background:rgba(212,175,55,.1); }
+
+    /* MINI BA */
+    .mini-ba { position:relative; width:100%; height:248px; border-radius:1.25rem; overflow:hidden; background:#07070a; margin-bottom:1.25rem; border:1px solid rgba(212,175,55,.12); cursor:ew-resize; }
+    .mini-ba-base,.mini-ba-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; pointer-events:none; user-select:none; }
+    .mini-ba-clip { position:absolute; inset:0; width:100%; height:100%; clip-path:inset(0 50% 0 0); z-index:2; }
+    .mini-ba-div { position:absolute; top:0; left:50%; width:2.5px; height:100%; background:#D4AF37; transform:translateX(-50%); z-index:4; pointer-events:none; box-shadow:0 0 12px rgba(212,175,55,.6); }
+    .mini-ba-slider { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:ew-resize; z-index:8; margin:0; }
+    .mini-ba-handle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); z-index:6; pointer-events:none; }
+    .mini-handle-pill { width:38px; height:38px; background:linear-gradient(135deg,#D4AF37,#F5E7A4); border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid rgba(255,255,255,.9); box-shadow:0 0 0 5px rgba(212,175,55,.14), 0 4px 14px rgba(0,0,0,.5); }
+    .mini-lbl { position:absolute; bottom:10px; z-index:5; pointer-events:none; font-size:.65rem; font-weight:600; letter-spacing:.1em; background:rgba(0,0,0,.55); backdrop-filter:blur(8px); padding:2px 10px; border-radius:60px; border:1px solid rgba(255,255,255,.08); }
+    .mini-lbl-b { left:10px; color:#bbb; }
+    .mini-lbl-a { right:10px; color:#D4AF37; border-color:rgba(212,175,55,.3); background:rgba(212,175,55,.1); }
+
+    /* TRY BUTTON */
+    .try-btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px 20px; background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(212,175,55,.04)); border:1px solid rgba(212,175,55,.28); border-radius:1rem; color:#D4AF37; font-weight:600; font-size:.85rem; letter-spacing:.06em; transition:all .3s; text-decoration:none; }
+    .try-btn:hover { background:linear-gradient(135deg,rgba(212,175,55,.22),rgba(212,175,55,.08)); border-color:rgba(212,175,55,.55); transform:translateY(-2px); box-shadow:0 8px 22px -8px rgba(212,175,55,.3); }
+    .try-btn .arr { margin-left:auto; }
+
+    /* STATS */
+    .stat-card { text-align:center; padding:2rem 1rem; border-right:1px solid rgba(255,255,255,.05); }
+    .stat-card:last-child { border-right:none; }
+
+    /* STEP */
+    .step-icon { width:88px; height:88px; border-radius:1.5rem; display:flex; align-items:center; justify-content:center; font-size:2rem; color:#D4AF37; margin:0 auto 1.5rem; transition:transform .3s; }
+    .step-icon:hover { transform:scale(1.06); }
+
+    /* TESTIMONIAL */
+    .testi-card { background:rgba(10,10,14,.75); border:1px solid rgba(212,175,55,.09); border-radius:2rem; padding:2rem; transition:all .4s; backdrop-filter:blur(14px); }
+    .testi-card:hover { border-color:rgba(212,175,55,.28); transform:translateY(-4px); box-shadow:0 20px 40px -15px rgba(0,0,0,.6); }
+    .testi-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,rgba(212,175,55,.25),rgba(212,175,55,.08)); border:1px solid rgba(212,175,55,.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem; color:#D4AF37; flex-shrink:0; }
+    .stars { display:flex; gap:2px; margin-bottom:1rem; }
+    .stars i { color:#D4AF37; font-size:.75rem; }
+
+    /* CTA BOX */
+    .cta-box { position:relative; border-radius:3rem; overflow:hidden; border:1px solid rgba(212,175,55,.22); text-align:center; padding:5rem 2rem; background:radial-gradient(ellipse at 50% 0%, rgba(212,175,55,.1) 0%, rgba(5,5,5,.95) 65%); }
+    .cta-box::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(212,175,55,.022) 1px,transparent 1px),linear-gradient(to right,rgba(212,175,55,.022) 1px,transparent 1px); background-size:52px 52px; }
+
+    /* FOOTER */
+    .footer-col-title { font-size:.7rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:1.25rem; display:block; }
+    .footer-link { display:block; color:rgba(156,163,175,1); font-size:.875rem; margin-bottom:.65rem; transition:color .2s; text-decoration:none; }
+    .footer-link:hover { color:#D4AF37; }
+    .footer-rule { height:1px; margin:2.5rem 0; background:linear-gradient(to right, transparent, rgba(212,175,55,.18), transparent); }
+    .social-btn { width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; color:#9ca3af; transition:all .3s; text-decoration:none; }
+    .social-btn:hover { background:rgba(212,175,55,.1); border-color:rgba(212,175,55,.38); color:#D4AF37; transform:translateY(-2px); }
+    .newsletter-input { background:rgba(255,255,255,.05); border:1px solid rgba(212,175,55,.18); border-radius:9999px; padding:10px 20px; color:#fff; font-family:'Space Grotesk',sans-serif; font-size:.85rem; outline:none; transition:border-color .3s; width:100%; }
+    .newsletter-input::placeholder { color:rgba(255,255,255,.3); }
+    .newsletter-input:focus { border-color:rgba(212,175,55,.45); }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media(max-width:640px){
+      .ba-wrapper { height:360px; border-radius:1.75rem; }
+      .mini-ba { height:210px; }
+      .handle-pill { width:46px; height:46px; }
+      .ba-label { font-size:.65rem; padding:4px 12px; }
+      .cta-box { padding:3rem 1.5rem; border-radius:2rem; }
+      .stat-card { border-right:none; border-bottom:1px solid rgba(255,255,255,.05); }
+      .stat-card:last-child { border-bottom:none; }
+    }
+    @media(hover:none) and (pointer:coarse){ .ba-slider-input,.mini-ba-slider { opacity:.01; } }
+  </style>
+</head>
+<body class="bg-grid">
+
+<div class="fluid-bg">
+  <div class="fluid-orb fluid-orb-1"></div>
+  <div class="fluid-orb fluid-orb-2"></div>
+  <div class="fluid-orb fluid-orb-3"></div>
+</div>
+
+<nav class="glass-nav fixed w-full z-50 top-0">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+    <div class="flex items-center gap-2 md:gap-3">
+      <a href="https://watulab.com" class="h-9 w-9 md:h-11 md:w-11 border border-primary-gold/40 rounded-full flex items-center justify-center bg-brand-grey/70 overflow-hidden hover:border-primary-gold transition-all hover:scale-105 shrink-0">
+        <img src="/assets/favicon.png" alt="Watu Lab" class="h-full w-full object-cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="hidden w-full h-full items-center justify-center text-primary-gold font-bold text-lg">W</div>
+      </a>
+      <span class="text-xl md:text-2xl font-black tracking-tighter bg-gradient-to-r from-primary-gold-light via-primary-gold to-primary-gold-soft bg-clip-text text-transparent">Pixtrend</span>
+    </div>
+    <div class="hidden md:flex items-center gap-1">
+      <a href="#demo"         class="nav-link">Demo</a>
+      <a href="#features"     class="nav-link">Vipengele</a>
+      <a href="#how"          class="nav-link">Jinsi</a>
+      <a href="#testimonials" class="nav-link">Maoni</a>
+    </div>
+    <div class="flex items-center gap-2 md:gap-4">
+      <a href="https://pixtrend.watulab.com" class="hidden sm:block text-sm font-medium text-white/60 hover:text-white transition-colors px-2 md:px-3 py-2">Ingia</a>
+      <a href="https://pixtrend.watulab.com" class="btn-gold px-4 py-2 md:px-6 md:py-2.5 text-xs md:text-sm flex items-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-wand-magic-sparkles text-[10px] md:text-xs"></i> JARIBU BURE
+      </a>
+    </div>
+  </div>
+</nav>
+
+<section class="relative min-h-[90vh] md:min-h-screen flex flex-col items-center justify-center pt-28 pb-16 px-4 md:px-6 text-center overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-brand-black/50 via-transparent to-brand-black pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-5xl mx-auto reveal active w-full">
+    <div class="inline-flex items-center gap-2 bg-primary-gold/10 backdrop-blur-md px-4 md:px-5 py-1.5 md:py-2 rounded-full border border-primary-gold/22 mb-6 md:mb-8">
+      <span class="w-1.5 h-1.5 bg-primary-gold rounded-full animate-pulse"></span>
+      <span class="text-primary-gold-light text-[10px] md:text-xs tracking-[.25em] uppercase font-semibold">Powered by Watu Lab</span>
+    </div>
+
+    <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.05] mb-6 md:mb-7 mx-auto max-w-4xl">
+      <span class="block">Badili <span class="shimmer-text">Sura Yako</span></span>
+      <span class="block text-transparent bg-clip-text bg-gradient-to-r from-white via-primary-gold-light to-primary-gold">Kwa Akili Mnemba</span>
+    </h1>
+
+    <p class="text-gray-300 text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 md:mb-10 font-light leading-relaxed px-2">
+      Teknolojia ya kipekee inayosafisha picha, kubadili mitindo ya nywele, na mavazi kwa sekunde moja.
+      <span class="block mt-2 text-primary-gold-light font-medium">Ubora wa 4K · Uhalisia kamili · Bila kupoteza maelezo.</span>
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center mb-10 md:mb-14 w-full px-2 sm:px-0">
+      <a href="https://pixtrend.watulab.com" class="btn-gold w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 text-sm md:text-base flex justify-center items-center gap-2.5">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> JARIBU BURE SASA
+      </a>
+      <a href="#demo" class="btn-outline w-full sm:w-auto px-6 py-3.5 md:px-10 md:py-4 text-sm md:text-base flex justify-center items-center gap-2 text-white/80">
+        <i class="fa-regular fa-eye text-primary-gold/70"></i> ONA MAAJABU
+      </a>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-x-4 md:gap-x-7 gap-y-3 px-4">
+      <div class="flex items-center gap-2 text-[11px] md:text-xs text-white/40"><i class="fa-regular fa-circle-check text-primary-gold/60"></i> Bila kadi ya benki</div>
+      <div class="w-px h-4 bg-white/10 hidden sm:block"></div>
+      <div class="flex items-center gap-2 text-[11px] md:text-xs text-white/40"><i class="fa-solid fa-shield text-primary-gold/60"></i> Face Locker™ salama</div>
+      <div class="w-px h-4 bg-white/10 hidden sm:block"></div>
+      <div class="flex items-center gap-2 text-[11px] md:text-xs text-white/40"><i class="fa-regular fa-clock text-primary-gold/60"></i> Sekunde chache tu</div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-16 right-12 w-80 h-80 bg-primary-gold/4 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute top-36 left-8 w-72 h-72 bg-primary-gold/4 rounded-full blur-3xl pointer-events-none"></div>
+</section>
+
+<section class="relative z-10 border-y border-white/5 bg-black/35 backdrop-blur-sm">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 reveal">
+      <div class="stat-card">
+        <div class="text-4xl md:text-5xl font-black text-primary-gold mb-1.5 tracking-tight"><span class="counter-val" data-target="10000" data-suffix="+" data-compact="true">0</span></div>
+        <p class="text-gray-400 text-xs md:text-sm">Picha zilizosafishwa</p>
+      </div>
+      <div class="stat-card">
+        <div class="text-4xl md:text-5xl font-black text-primary-gold mb-1.5 tracking-tight"><span class="counter-val" data-target="98" data-suffix="%">0</span></div>
+        <p class="text-gray-400 text-xs md:text-sm">Usahihi wa uso</p>
+      </div>
+      <div class="stat-card">
+        <div class="text-4xl md:text-5xl font-black text-primary-gold mb-1.5 tracking-tight"><span class="counter-val" data-target="2.3" data-suffix="s" data-decimal="true">0</span></div>
+        <p class="text-gray-400 text-xs md:text-sm">Muda wastani</p>
+      </div>
+      <div class="stat-card">
+        <div class="text-4xl md:text-5xl font-black text-primary-gold mb-1.5 tracking-tight"><span class="counter-val" data-target="500" data-suffix="+">0</span></div>
+        <p class="text-gray-400 text-xs md:text-sm">Kampuni zinazotumia</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" class="py-20 md:py-32 px-5 flex flex-col items-center relative z-10">
+  <div class="text-center max-w-3xl mx-auto mb-10 md:mb-14 reveal">
+    <span class="section-label">SLIDER INTERACTIVE</span>
+    <h2 class="text-4xl md:text-6xl font-black mt-4 mb-4 tracking-tighter">
+      Uwezo wa <span class="text-primary-gold">Boresha</span>
+    </h2>
+    <p class="text-gray-400 text-base md:text-lg">Sogeza kiteuzi uone tofauti ya kiwango cha juu — kutoka ukungu hadi uhalisia wa 4K.</p>
+  </div>
+
+  <div class="ba-wrapper reveal">
+    <img src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+         alt="Before" class="ba-base-img" style="filter:blur(5px) contrast(.8) brightness(.62) saturate(.45);">
+    <div class="ba-clip-layer" id="baClipLayer">
+      <img src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+           alt="After AI 4K" class="ba-clip-img" style="filter:contrast(1.08) saturate(1.28) brightness(1.06);">
+    </div>
+    <div class="ba-divider" id="baDivider"></div>
+    <input type="range" min="0" max="100" value="50" class="ba-slider-input" id="baSlider" aria-label="Before After Slider">
+    <div class="ba-handle" id="baHandle">
+      <div class="handle-pill"><i class="fas fa-arrows-left-right text-black text-lg"></i></div>
+    </div>
+    <div class="ba-label label-left">KABLA</div>
+    <div class="ba-label label-right">BAADA (AI 4K)</div>
+  </div>
+
+  <div class="mt-8 flex flex-col items-center gap-4 text-center w-full max-w-sm sm:max-w-none">
+    <p class="text-gray-500 text-xs md:text-sm flex items-center justify-center gap-2">
+      <i class="fa-regular fa-lightbulb text-primary-gold/70"></i>
+      Buruta mpini — teknolojia yetu huboresha maelezo.
+    </p>
+    <a href="https://pixtrend.watulab.com" class="btn-gold w-full sm:w-auto px-8 py-3.5 flex justify-center items-center gap-2.5 text-sm">
+      <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> JARIBU NA PICHA YAKO
+    </a>
+  </div>
+</section>
+
+<section id="features" class="py-16 md:py-24 px-5 md:px-6 max-w-7xl mx-auto">
+  <div class="text-center mb-10 md:mb-14 reveal">
+    <span class="section-label">UWEZO MKUBWA</span>
+    <h2 class="text-4xl md:text-6xl font-black mt-4 mb-4 tracking-tighter">
+      Zana za <span class="text-primary-gold">Kizalendo</span> za AI
+    </h2>
+    <p class="text-gray-400 max-w-2xl mx-auto text-base">Zana tatu kuu zinazobadilisha jinsi unavyoonekana mtandaoni na kwenye picha.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] reveal flex flex-col" style="transition-delay:.0s">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="h-12 w-12 bg-gradient-to-br from-brand-grey to-brand-dark border border-primary-gold/25 text-primary-gold rounded-2xl flex items-center justify-center text-xl shadow-xl"><i class="fas fa-scissors"></i></div>
+          <div><h3 class="text-lg md:text-xl font-black leading-tight tracking-tight">Kinyozi AI</h3><p class="text-xs text-primary-gold/70">Mitindo 200+</p></div>
+        </div>
+        <span class="text-xs font-mono font-bold text-white/30 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">01</span>
+      </div>
+      <div class="mini-ba">
+        <img src="https://images.pexels.com/photos/3998420/pexels-photo-3998420.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Before" class="mini-ba-base" style="filter:blur(3.5px) saturate(.22) brightness(.62) contrast(.82)">
+        <div class="mini-ba-clip">
+          <img src="https://images.pexels.com/photos/3998420/pexels-photo-3998420.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="After" class="mini-ba-img" style="filter:contrast(1.12) saturate(1.45) brightness(1.06)">
+        </div>
+        <div class="mini-ba-div"></div>
+        <input type="range" min="0" max="100" value="50" class="mini-ba-slider">
+        <div class="mini-ba-handle"><div class="mini-handle-pill"><i class="fas fa-arrows-left-right text-black" style="font-size:.58rem"></i></div></div>
+        <span class="mini-lbl mini-lbl-b">KABLA</span><span class="mini-lbl mini-lbl-a">BAADA</span>
+      </div>
+      <p class="text-gray-400 text-sm md:text-[15px] leading-relaxed mb-6 flex-1">Gundua maktaba ya mitindo ya nywele na ndevu. Jaribu muonekano mpya kabla ya kwenda saluni — AI inabashiri mtindo wako halisi.</p>
+      <a href="https://pixtrend.watulab.com" class="try-btn">
+        <i class="fas fa-wand-magic-sparkles text-xs"></i> Jaribu Kinyozi AI <i class="fas fa-arrow-right text-xs arr"></i>
+      </a>
+    </div>
+
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] reveal flex flex-col" style="transition-delay:.1s">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="h-12 w-12 bg-gradient-to-br from-brand-grey to-brand-dark border border-primary-gold/25 text-primary-gold rounded-2xl flex items-center justify-center text-xl shadow-xl"><i class="fas fa-briefcase"></i></div>
+          <div><h3 class="text-lg md:text-xl font-black leading-tight tracking-tight">Professional Shots</h3><p class="text-xs text-primary-gold/70">Kampuni 500+</p></div>
+        </div>
+        <span class="text-xs font-mono font-bold text-white/30 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">02</span>
+      </div>
+      <div class="mini-ba">
+        <img src="https://images.pexels.com/photos/3778619/pexels-photo-3778619.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Before" class="mini-ba-base" style="filter:blur(3.5px) saturate(.18) brightness(.58) contrast(.8)">
+        <div class="mini-ba-clip">
+          <img src="https://images.pexels.com/photos/3778619/pexels-photo-3778619.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="After" class="mini-ba-img" style="filter:contrast(1.14) saturate(1.35) brightness(1.08)">
+        </div>
+        <div class="mini-ba-div"></div>
+        <input type="range" min="0" max="100" value="50" class="mini-ba-slider">
+        <div class="mini-ba-handle"><div class="mini-handle-pill"><i class="fas fa-arrows-left-right text-black" style="font-size:.58rem"></i></div></div>
+        <span class="mini-lbl mini-lbl-b">KABLA</span><span class="mini-lbl mini-lbl-a">BAADA</span>
+      </div>
+      <p class="text-gray-400 text-sm md:text-[15px] leading-relaxed mb-6 flex-1">Pata picha za kitaalamu za LinkedIn na CV bila studio. AI yetu huongeza mwangaza, ubora wa 4K, na mandhari safi za kimataifa.</p>
+      <a href="https://pixtrend.watulab.com" class="try-btn">
+        <i class="fas fa-wand-magic-sparkles text-xs"></i> Jaribu Professional Shots <i class="fas fa-arrow-right text-xs arr"></i>
+      </a>
+    </div>
+
+    <div class="glass-card p-6 md:p-8 rounded-[2rem] reveal flex flex-col" style="transition-delay:.2s">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="h-12 w-12 bg-gradient-to-br from-brand-grey to-brand-dark border border-primary-gold/25 text-primary-gold rounded-2xl flex items-center justify-center text-xl shadow-xl"><i class="fas fa-vest"></i></div>
+          <div><h3 class="text-lg md:text-xl font-black leading-tight tracking-tight">Kabati Langu</h3><p class="text-xs text-primary-gold/70">100/siku</p></div>
+        </div>
+        <span class="text-xs font-mono font-bold text-white/30 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">03</span>
+      </div>
+      <div class="mini-ba">
+        <img src="https://images.pexels.com/photos/994517/pexels-photo-994517.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Before" class="mini-ba-base" style="filter:blur(3.5px) saturate(.14) brightness(.56) contrast(.78)">
+        <div class="mini-ba-clip">
+          <img src="https://images.pexels.com/photos/994517/pexels-photo-994517.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="After" class="mini-ba-img" style="filter:contrast(1.1) saturate(1.55) brightness(1.1)">
+        </div>
+        <div class="mini-ba-div"></div>
+        <input type="range" min="0" max="100" value="50" class="mini-ba-slider">
+        <div class="mini-ba-handle"><div class="mini-handle-pill"><i class="fas fa-arrows-left-right text-black" style="font-size:.58rem"></i></div></div>
+        <span class="mini-lbl mini-lbl-b">KABLA</span><span class="mini-lbl mini-lbl-a">BAADA</span>
+      </div>
+      <p class="text-gray-400 text-sm md:text-[15px] leading-relaxed mb-6 flex-1">Jaribu suti, nguo za kawaida, na mavazi ya mtindo wowote. Badilisha rangi na muundo kwa kutumia smart templates za AI.</p>
+      <a href="https://pixtrend.watulab.com" class="try-btn">
+        <i class="fas fa-wand-magic-sparkles text-xs"></i> Jaribu Kabati Langu <i class="fas fa-arrow-right text-xs arr"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<section id="how" class="py-20 md:py-24 border-y border-white/5 bg-black/20 backdrop-blur-sm relative z-10">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12 md:mb-16 reveal">
+      <span class="section-label">JINSI INAVYOFANYA KAZI</span>
+      <h2 class="text-4xl md:text-5xl font-black mt-4 mb-4 tracking-tighter">Hatua <span class="text-primary-gold">Tatu</span> Tu</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-10 md:gap-12">
+      <div class="reveal text-center" style="transition-delay:.0s">
+        <div class="step-icon bg-gradient-to-br from-brand-grey to-black border border-primary-gold/18 shadow-xl"><i class="fas fa-cloud-arrow-up"></i></div>
+        <div class="text-xs font-mono font-bold text-primary-gold/50 mb-2 tracking-widest">01</div>
+        <h3 class="text-xl font-bold mb-2 tracking-tight">Pakia Picha</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Pakia selfie, picha ya studio, au screenshot — formatiti zote zinakubaliwa bila tatizo.</p>
+      </div>
+      <div class="reveal text-center" style="transition-delay:.12s">
+        <div class="step-icon bg-gradient-to-br from-primary-gold/18 to-black border border-primary-gold/38 shadow-xl shadow-primary-gold/8"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div class="text-xs font-mono font-bold text-primary-gold/50 mb-2 tracking-widest">02</div>
+        <h3 class="text-xl font-bold mb-2 tracking-tight">Chagua Mtindo</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Chagua kutoka kwa mitindo ya nywele, mavazi, au uboreshaji wa picha kwa kubonyeza moja.</p>
+      </div>
+      <div class="reveal text-center" style="transition-delay:.24s">
+        <div class="step-icon bg-gradient-to-br from-brand-grey to-black border border-primary-gold/18 shadow-xl"><i class="fas fa-download"></i></div>
+        <div class="text-xs font-mono font-bold text-primary-gold/50 mb-2 tracking-widest">03</div>
+        <h3 class="text-xl font-bold mb-2 tracking-tight">Pakua Matokeo</h3>
+        <p class="text-gray-400 text-sm leading-relaxed">Sekunde 2.3 tu — picha yako ya 4K iko tayari. Pakua au shiriki moja kwa moja.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 md:py-28 relative z-10">
+  <div class="max-w-6xl mx-auto px-5 grid md:grid-cols-2 gap-16 items-center">
+    <div class="reveal-l">
+      <span class="section-label">KINACHOTUTOFAUTISHA</span>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-black mt-4 mb-8 leading-[1.1] tracking-tighter">
+        Siri ya <span class="text-primary-gold">Uhalisia</span> Kamili
+      </h2>
+      <div class="space-y-4 mb-10">
+        <div class="flex items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-primary-gold/18 hover:bg-primary-gold/[0.03] transition-all">
+          <div class="p-3 bg-primary-gold/10 rounded-xl text-primary-gold text-lg flex-shrink-0"><i class="fas fa-face-smile"></i></div>
+          <div><strong class="block text-white font-bold mb-0.5 tracking-tight">No AI Plasticity</strong><span class="text-gray-400 text-sm">Tunabakiza vinyweleo, mikunjo ya ngozi na mwonekano asilia — bila uso wa plastiki wa AI.</span></div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-primary-gold/18 hover:bg-primary-gold/[0.03] transition-all">
+          <div class="p-3 bg-primary-gold/10 rounded-xl text-primary-gold text-lg flex-shrink-0"><i class="fas fa-eraser"></i></div>
+          <div><strong class="block text-white font-bold mb-0.5 tracking-tight">Noise Removal Pro</strong><span class="text-gray-400 text-sm">Tunaondoa vitu visivyohitajika — logos, watu nyuma, UI — kwa usahihi wa hali ya juu.</span></div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-primary-gold/18 hover:bg-primary-gold/[0.03] transition-all">
+          <div class="p-3 bg-primary-gold/10 rounded-xl text-primary-gold text-lg flex-shrink-0"><i class="fas fa-fingerprint"></i></div>
+          <div><strong class="block text-white font-bold mb-0.5 tracking-tight">Face Locker™</strong><span class="text-gray-400 text-sm">Sura yako inahifadhiwa kwa usimbaji fiche wa kiwango cha juu — wewe pekee ndiye unayeiona.</span></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="text-center p-3 md:p-4 rounded-2xl bg-primary-gold/5 border border-primary-gold/14">
+          <div class="text-2xl md:text-3xl font-black text-primary-gold tracking-tight"><span class="counter-val" data-target="98" data-suffix="%">0</span></div>
+          <p class="text-gray-500 text-[10px] md:text-xs mt-1 uppercase font-bold tracking-wider">usahihi</p>
+        </div>
+        <div class="text-center p-3 md:p-4 rounded-2xl bg-primary-gold/5 border border-primary-gold/14">
+          <div class="text-2xl md:text-3xl font-black text-primary-gold tracking-tight"><span class="counter-val" data-target="2.3" data-suffix="s" data-decimal="true">0</span></div>
+          <p class="text-gray-500 text-[10px] md:text-xs mt-1 uppercase font-bold tracking-wider">muda</p>
+        </div>
+        <div class="text-center p-3 md:p-4 rounded-2xl bg-primary-gold/5 border border-primary-gold/14">
+          <div class="text-2xl md:text-3xl font-black text-primary-gold tracking-tight"><span class="counter-val" data-target="4.9" data-suffix="/5" data-decimal="true">0</span></div>
+          <p class="text-gray-500 text-[10px] md:text-xs mt-1 uppercase font-bold tracking-wider">alama</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative reveal-r flex justify-center mt-8 md:mt-0">
+      <div class="absolute -inset-10 bg-primary-gold/7 blur-3xl rounded-full pointer-events-none"></div>
+      <div class="relative rounded-[2.5rem] border border-white/12 shadow-2xl overflow-hidden max-w-xs w-full">
+        <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600&h=800&fit=crop"
+             alt="AI realism demo" class="w-full object-cover hover:scale-105 transition duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-5">
+          <div class="flex gap-0.5 mb-2">
+            <i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i><i class="fas fa-star text-primary-gold text-xs"></i>
+          </div>
+          <p class="text-white font-bold text-sm flex items-center gap-2"><i class="fa-regular fa-circle-check text-primary-gold"></i> Uhalisia wa 99% · Imehakikiwa</p>
+        </div>
+        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-primary-gold/30 rounded-full px-3 py-1.5 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-primary-gold rounded-full animate-pulse"></span>
+          <span class="text-primary-gold text-[10px] uppercase tracking-widest font-bold">AI Enhanced</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials" class="py-20 md:py-24 border-t border-white/5 relative z-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12 md:mb-14 reveal">
+      <span class="section-label">MAONI YA WATUMIAJI</span>
+      <h2 class="text-4xl md:text-5xl font-black mt-4 mb-4 tracking-tighter">Wanasema <span class="text-primary-gold">Nini?</span></h2>
+      <p class="text-gray-400 max-w-xl mx-auto text-base">Watumiaji wetu kutoka Afrika Mashariki wanashiriki uzoefu wao wa kweli.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="testi-card reveal" style="transition-delay:.0s">
+        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="text-gray-300 text-sm leading-relaxed mb-5">"Nilishangaa sana na matokeo. Picha yangu ya LinkedIn ilikuwa chafu — baada ya Pixtrend ikawa professional kabisa. Msimamizi wangu aliuliza nimepiga wapi studio!"</p>
+        <div class="flex items-center gap-3 pt-4 border-t border-white/5">
+          <div class="testi-avatar">A</div>
+          <div><p class="text-white text-sm font-bold tracking-tight">Amina Hassan</p><p class="text-gray-500 text-xs">Software Engineer · Dar</p></div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.12s">
+        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p class="text-gray-300 text-sm leading-relaxed mb-5">"Badala ya kulipa sh 150,000 kwa studio, ninapata picha bora zaidi kwa sekunde chache tu. Professional Shots imebadilisha biashara yangu kabisa."</p>
+        <div class="flex items-center gap-3 pt-4 border-t border-white/5">
+          <div class="testi-avatar">K</div>
+          <div><p class="text-white text-sm font-bold tracking-tight">Kwame Osei</p><p class="text-gray-500 text-xs">Entrepreneur · Nairobi</p></div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.24s">
+        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <p class="text-gray-300 text-sm leading-relaxed mb-5">"Kama mtu wa fashion, Kabati Langu imebadilisha kazi yangu. Ninaonyesha wateja mavazi mapya bila hata kuvaa — wote wanaridhika na muundo."</p>
+        <div class="flex items-center gap-3 pt-4 border-t border-white/5">
+          <div class="testi-avatar">F</div>
+          <div><p class="text-white text-sm font-bold tracking-tight">Fatima Nkosi</p><p class="text-gray-500 text-xs">Fashion Influencer · Kampala</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 md:py-20 px-4 md:px-6 relative z-10">
+  <div class="max-w-4xl mx-auto reveal">
+    <div class="cta-box">
+      <div class="relative z-10">
+        <span class="section-label inline-flex mb-4 md:mb-6">ANZA LEO</span>
+        <h2 class="text-4xl md:text-6xl font-black mt-2 mb-4 md:mb-6 tracking-tighter leading-[1.1]">
+          Tayari Kubadilisha<br><span class="text-primary-gold">Sura Yako?</span>
+        </h2>
+        <p class="text-gray-300 text-base md:text-lg mb-8 md:mb-10 max-w-xl mx-auto">Jiunge na watumiaji 10,000+ wanaotumia Pixtrend kila siku. Hakuna kadi ya benki inayohitajika.</p>
+        
+        <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full px-2 sm:px-0">
+          <a href="https://pixtrend.watulab.com" class="btn-gold w-full sm:w-auto px-8 md:px-12 py-4 text-sm md:text-base flex items-center justify-center gap-2.5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> ANZA BURE SASA
+          </a>
+          <a href="#demo" class="btn-outline w-full sm:w-auto px-8 md:px-10 py-4 text-sm font-semibold flex items-center justify-center gap-2 text-white/80">
+            <i class="fa-regular fa-eye text-primary-gold/70"></i> Tazama Demo
+          </a>
+        </div>
+        <p class="text-gray-500 text-[10px] md:text-xs mt-6 font-medium tracking-wide">Hakuna usajili unaohitajika · Matokeo kwa sekunde</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="relative z-10 border-t border-white/6" style="background:rgba(3,3,5,.88);backdrop-filter:blur(20px)">
+  <div class="max-w-7xl mx-auto px-6 pt-12 md:pt-16 pb-8">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-4">
+
+      <div class="sm:col-span-2 lg:col-span-1">
+        <p class="font-black text-2xl md:text-3xl tracking-tighter bg-gradient-to-r from-white to-primary-gold bg-clip-text text-transparent mb-3">Pixtrend</p>
+        <p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-xs">Teknolojia ya AI inayobadilisha jinsi unavyoonekana. Zao la Watu Lab — ubunifu wa kisasa wa Afrika.</p>
+        <div class="flex gap-2.5">
+          <a href="#" class="social-btn"><i class="fa-brands fa-x-twitter text-sm"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-instagram text-sm"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-linkedin text-sm"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-tiktok text-sm"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <span class="footer-col-title">Bidhaa</span>
+        <a href="https://pixtrend.watulab.com" class="footer-link">Kinyozi AI</a>
+        <a href="https://pixtrend.watulab.com" class="footer-link">Professional Shots</a>
+        <a href="https://pixtrend.watulab.com" class="footer-link">Kabati Langu</a>
+        <a href="https://pixtrend.watulab.com" class="footer-link">API ya Wasanidi</a>
+        <a href="#" class="footer-link">Bei na Mipango</a>
+      </div>
+
+      <div>
+        <span class="footer-col-title">Kampuni</span>
+        <a href="https://watulab.com" class="footer-link">Kuhusu Watu Lab</a>
+        <a href="#" class="footer-link">Blogu ya AI</a>
+        <a href="#" class="footer-link">Sera ya Faragha</a>
+        <a href="#" class="footer-link">Masharti ya Matumizi</a>
+      </div>
+
+      <div>
+        <span class="footer-col-title">Habari Mpya</span>
+        <p class="text-gray-400 text-xs md:text-sm mb-4 leading-relaxed">Pokea mwongozo wa AI na habari za kipengele kipya kwenye barua pepe yako.</p>
+        <input type="email" placeholder="barua@mfano.com" class="newsletter-input mb-2">
+        <button class="btn-gold px-5 py-2.5 text-sm w-full rounded-full font-bold">Jiandikishe →</button>
+      </div>
+    </div>
+
+    <div class="footer-rule"></div>
+
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-gray-500 text-[11px] md:text-xs text-center md:text-left">&copy; 2026 Pixtrend. Zao la <a href="https://watulab.com" class="text-white/60 hover:text-primary-gold transition-colors underline underline-offset-2 decoration-primary-gold/25 font-bold">Watu Lab</a>. Haki zote zimehifadhiwa.</p>
+      <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-[11px] md:text-xs text-gray-500 font-medium">
+        <a href="#" class="hover:text-primary-gold transition-colors">Sera ya Faragha</a>
+        <a href="#" class="hover:text-primary-gold transition-colors">Masharti</a>
+        <a href="#" class="hover:text-primary-gold transition-colors">Cookies</a>
+        <a href="#" class="hover:text-primary-gold transition-colors">Wasiliana</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+
+  /* 1. SCROLL REVEAL */
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -24px 0px' });
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => revealObs.observe(el));
+
+  /* 2. ANIMATED COUNTERS */
+  const animatedSet = new Set();
+
+  function runCounter(el) {
+    if (animatedSet.has(el)) return;
+    animatedSet.add(el);
+    const target    = parseFloat(el.dataset.target);
+    const isDecimal = el.dataset.decimal === 'true';
+    const isCompact = el.dataset.compact  === 'true';
+    const suffix    = el.dataset.suffix   || '';
+    const dur       = 2400;
+    const t0        = performance.now();
+
+    (function tick(now) {
+      const p    = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 4);
+      const cur  = target * ease;
+      let display;
+      if (isCompact && cur >= 1000) {
+        display = (cur / 1000).toFixed(cur < 10000 ? 1 : 0) + 'K';
+      } else if (isDecimal) {
+        display = cur.toFixed(1);
+      } else {
+        display = Math.round(cur).toLocaleString();
+      }
+      el.textContent = display + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  const cntObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.querySelectorAll('.counter-val').forEach(runCounter);
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('section, div').forEach(el => {
+    if (el.querySelector('.counter-val')) cntObs.observe(el);
+  });
+
+  /* 3. MAIN BA SLIDER */
+  const baSlider = document.getElementById('baSlider');
+  const baClip   = document.getElementById('baClipLayer');
+  const baHandle = document.getElementById('baHandle');
+  const baDiv    = document.getElementById('baDivider');
+  if (baSlider && baClip) {
+    const upMain = v => {
+      baClip.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+      if (baHandle) baHandle.style.left = v + '%';
+      if (baDiv)    baDiv.style.left    = v + '%';
+    };
+    baSlider.addEventListener('input',     e => upMain(+e.target.value));
+    baSlider.addEventListener('touchmove', e => upMain(+e.target.value));
+    upMain(50);
+  }
+
+  /* 4. MINI BA SLIDERS */
+  document.querySelectorAll('.mini-ba').forEach(w => {
+    const clip   = w.querySelector('.mini-ba-clip');
+    const slider = w.querySelector('.mini-ba-slider');
+    const handle = w.querySelector('.mini-ba-handle');
+    const div    = w.querySelector('.mini-ba-div');
+    const up = v => {
+      clip.style.clipPath = `inset(0 ${100 - v}% 0 0)`;
+      if (handle) handle.style.left = v + '%';
+      if (div)    div.style.left    = v + '%';
+    };
+    slider.addEventListener('input',     e => up(+e.target.value));
+    slider.addEventListener('touchmove', e => up(+e.target.value));
+    up(50);
+  });
+
+  /* 5. SMOOTH SCROLL */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    });
+  });
+
+  /* 6. NAV BORDER ON SCROLL */
+  const nav = document.querySelector('.glass-nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 40 ? 'rgba(212,175,55,.22)' : 'rgba(212,175,55,.14)';
+  }, { passive: true });
+
+})();
+</script>
+</body>
+</html>
