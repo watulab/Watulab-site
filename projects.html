@@ -84,16 +84,18 @@
 
         <div class="w-full flex justify-center gap-8 mb-12 border-b border-gray-800 pb-2 opacity-0 transition-all duration-1000 ease-out translate-y-4 delay-200 projects-tabs"
             id="tabs-container">
-            <button onclick="switchProjectTab('ongoing')" id="btn-ongoing" class="tab-btn active">Inayoendelea</button>
-            <button onclick="switchProjectTab('market')" id="btn-market" class="tab-btn">Iliyokamilika</button>
+            <button onclick="switchProjectTab('ongoing')" id="btn-ongoing" class="tab-btn">Inayoendelea</button>
+            <button onclick="switchProjectTab('market')" id="btn-market" class="tab-btn active">Iliyokamilika</button>
         </div>
 
         <div class="w-full relative min-h-[400px] opacity-0 transition-all duration-1000 ease-out translate-y-4 delay-300 projects-tabs"
             id="projects-container">
 
-            <div id="content-ongoing" class="tab-content active w-full">
+            <!-- Ongoing Projects Tab Content -->
+            <div id="content-ongoing" class="tab-content w-full">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+                    <!-- Dashibodi ya Biashara Project Card -->
                     <div class="glass-card rounded-2xl overflow-hidden group">
                         <div
                             class="h-48 bg-gray-900 border-b border-white/5 flex items-center justify-center relative overflow-hidden">
@@ -114,6 +116,7 @@
                         </div>
                     </div>
 
+                    <!-- Mfumo wa Usafirishaji Project Card -->
                     <div class="glass-card rounded-2xl overflow-hidden group">
                         <div
                             class="h-48 bg-gray-900 border-b border-white/5 flex items-center justify-center relative overflow-hidden">
@@ -138,9 +141,11 @@
                 </div>
             </div>
 
-            <div id="content-market" class="tab-content w-full">
+            <!-- Completed Projects Tab Content -->
+            <div id="content-market" class="tab-content active w-full">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+                    <!-- Smart Event Project Card -->
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-full group">
                         <div
                             class="h-48 bg-gray-900 border-b border-white/5 flex items-center justify-center relative overflow-hidden">
@@ -160,13 +165,13 @@
                             <div class="flex flex-col gap-3 mt-auto">
                                 <a href="https://smartevent.co.tz"
                                     class="flex items-center justify-center gap-2 w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10 group/btn">
-                                    <i class="fab fa-google-play group-hover/btn:text-green-400 transition-colors"></i>
                                     <span class="font-bold text-sm">Web app</span>
                                 </a>
                             </div>
                         </div>
                     </div>
 
+                    <!-- PixTrend AI Project Card -->
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-full group">
                         <div
                             class="h-48 bg-gray-900 border-b border-white/5 flex items-center justify-center relative overflow-hidden">
@@ -184,14 +189,14 @@
                             <div class="flex flex-col gap-3 mt-auto">
                                 <a href="pixtrend.html"
                                     class="flex items-center justify-center gap-2 w-full py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors border border-white/10 group/btn">
-                                    <i class="fab fa-apple text-lg"></i>
                                     <span class="font-bold text-sm">Web App</span>
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-full group">
+                    <!-- RetailMaster Pro Project Card -->
+                    <!-- <div class="glass-card rounded-2xl overflow-hidden flex flex-col h-full group">
                         <div
                             class="h-48 bg-gray-900 border-b border-white/5 flex items-center justify-center relative overflow-hidden">
                             <i
@@ -216,7 +221,7 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
